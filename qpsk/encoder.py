@@ -58,7 +58,7 @@ class QpskEncoder(object):
     
   @staticmethod
   def _upsample(x, factor):
-    return numpy.tile(x.reshape(len(x), 1), (1, factor)).ravel()
+    return numpy.tile(x.reshape(len(x), 1), (1, int(factor))).ravel()
     
   def _encode_qpsk(self, symbol_stream):
     ratio = self._sr / self._br * 2
@@ -89,7 +89,7 @@ class QpskEncoder(object):
 
     crc = zlib.crc32(data) & 0xffffffff
 
-    data = map(ord, data)
+    data = list(data)
     # 16x 0 for the PLL ; 8x 21 for the edge detector ; 8x 3030 for syncing
     preamble = [0] * 8 + [0x99] * 4 + [0xcc] * 4
     crc_bytes = [crc >> 24, (crc >> 16) & 0xff, (crc >> 8) & 0xff, crc & 0xff]
@@ -105,7 +105,7 @@ class QpskEncoder(object):
     return self._encode(symbol_stream)
   
   def code_intro(self):
-    yield numpy.zeros((1.0 * self._sr, 1)).ravel()
+    yield numpy.zeros((self._sr, 1)).ravel()
     yield self._code_blank(1.0)
   
   def code_outro(self, duration=1.0):
@@ -114,7 +114,7 @@ class QpskEncoder(object):
   def code(self, data, page_size=1024, blank_duration=0.06):
     if len(data) % page_size != 0:
       tail = page_size - (len(data) % page_size)
-      data += '\xff' * tail
+      data += b'\xff' * tail
     
     offset = 0
     remaining_bytes = len(data)
@@ -195,7 +195,7 @@ def main():
       
   
   options, args = parser.parse_args()
-  data = file(args[0], 'rb').read()
+  data = open(args[0], 'rb').read()
   if len(args) != 1:
     logging.fatal('Specify one, and only one firmware .bin file!')
     sys.exit(1)
