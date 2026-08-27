@@ -64,7 +64,7 @@ class QpskEncoder(object):
     ratio = self._sr / self._br * 2
     symbol_stream = numpy.array(symbol_stream)
     bitstream_even = 2 * self._upsample(symbol_stream % 2, ratio) - 1
-    bitstream_odd = 2 * self._upsample(symbol_stream / 2, ratio) - 1
+    bitstream_odd = 2 * self._upsample(symbol_stream // 2, ratio) - 1
     return bitstream_even / numpy.sqrt(2.0), bitstream_odd / numpy.sqrt(2.0)
   
   def _modulate(self, q_mod, i_mod):
