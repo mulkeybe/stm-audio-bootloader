@@ -58,10 +58,10 @@ class QpskEncoder(object):
     
   @staticmethod
   def _upsample(x, factor):
-    return numpy.tile(x.reshape(len(x), 1), (1, int(factor))).ravel()
+    return numpy.tile(x.reshape(len(x), 1), (1, factor)).ravel()
     
   def _encode_qpsk(self, symbol_stream):
-    ratio = self._sr / self._br * 2
+    ratio = int(self._sr / self._br * 2)
     symbol_stream = numpy.array(symbol_stream)
     bitstream_even = 2 * self._upsample(symbol_stream % 2, ratio) - 1
     bitstream_odd = 2 * self._upsample(symbol_stream // 2, ratio) - 1
@@ -85,7 +85,7 @@ class QpskEncoder(object):
   def _code_packet(self, data):
     assert len(data) <= self._packet_size
     if len(data) != self._packet_size:
-      data = data + '\x00' * (self._packet_size - len(data))
+      data = data + b'\x00' * (self._packet_size - len(data))
 
     crc = zlib.crc32(data) & 0xffffffff
 
@@ -105,7 +105,7 @@ class QpskEncoder(object):
     return self._encode(symbol_stream)
   
   def code_intro(self):
-    yield numpy.zeros((self._sr, 1)).ravel()
+    yield numpy.zeros((int(1.0 * self._sr), 1)).ravel()
     yield self._code_blank(1.0)
   
   def code_outro(self, duration=1.0):
