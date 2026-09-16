@@ -232,7 +232,7 @@ def main():
       if len(block):
         writer.append(block)
   elif options.target == 'stm32f4':
-    for x in xrange(0, len(data), STM32F4_BLOCK_SIZE):
+    for x in range(0, len(data), STM32F4_BLOCK_SIZE):
       address = STM32F4_APPLICATION_START + x
       block = data[x:x+STM32F4_BLOCK_SIZE]
       pause = 2.5 if address in STM32F4_SECTOR_BASE_ADDRESS else 0.2
