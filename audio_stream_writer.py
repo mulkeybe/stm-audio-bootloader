@@ -82,7 +82,7 @@ class AudioStreamWriter(object):
       scale = (1 << (bitdepth - 1)) - 1
       # pylint: disable-msg=C6407
       scaled_signal = scaled_signal * scale
-      scaled_signal = numpy.array(scaled_signal, dtype='i%d' % (bitdepth / 8))
+      scaled_signal = numpy.array(scaled_signal, dtype='i%d' % (bitdepth // 8))
 
     return scaled_signal
   
