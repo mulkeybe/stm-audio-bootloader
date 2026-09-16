@@ -174,7 +174,7 @@ def main():
       metavar='FILE')
   
   options, args = parser.parse_args()
-  data = file(args[0], 'rb').read()
+  data = open(args[0], 'rb').read()
   if len(args) != 1:
     logging.fatal('Specify one, and only one firmware .bin file!')
     sys.exit(1)
